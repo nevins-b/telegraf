@@ -40,6 +40,9 @@ For additional details reference the [RabbitMQ Management HTTP Stats](https://cd
   ## A list of queues to gather as the rabbitmq_queue measurement. If not
   ## specified, metrics for all queues are gathered.
   # queues = ["telegraf"]
+  ## A list of nodes to pull metrics about. If not specified, metrics for
+  ## all nodes are gathered.
+  # nodes = ["rabbit@node1", "rabbit@node2"]
 ```
 
 ### Measurements & Fields:
