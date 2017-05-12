@@ -15,11 +15,6 @@ import (
 	"github.com/influxdata/telegraf/plugins/outputs/influxdb/client"
 )
 
-var (
-	// Quote Ident replacer.
-	qiReplacer = strings.NewReplacer("\n", `\n`, `\`, `\\`, `"`, `\"`)
-)
-
 // InfluxDB struct is the primary data structure for the plugin
 type InfluxDB struct {
 	// URL is only for backwards compatability
@@ -179,11 +174,13 @@ func (i *InfluxDB) Description() string {
 func (i *InfluxDB) Write(metrics []telegraf.Metric) error {
 
 	bufsize := 0
+	splitData := make([]telegraf.Metric, 0)
+
 	for _, m := range metrics {
 		bufsize += m.Len()
+		splitData = append(splitData, m.Split(i.UDPPayload)...)
 	}
-
-	r := metric.NewReader(metrics)
+	r := metric.NewReader(splitData)
 
 	// This will get set to nil if a successful write occurs
 	err := fmt.Errorf("Could not write to any InfluxDB server in cluster")
