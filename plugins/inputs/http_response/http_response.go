@@ -136,7 +136,6 @@ func (h *HTTPResponse) httpGather() (map[string]interface{}, error) {
 	// Start Timer
 	start := time.Now()
 	resp, err := h.client.Do(request)
-
 	if err != nil {
 		if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 			fields["result_type"] = "timeout"
