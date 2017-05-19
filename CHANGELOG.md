@@ -134,6 +134,7 @@
 - [#2822](https://github.com/influxdata/telegraf/issues/2822): Fix inconsistent label dimensions in prometheus output.
 
 ## v1.3.1 [2017-05-31]
+## v1.3.1 [unreleased]
 
 ### Bugfixes
 
