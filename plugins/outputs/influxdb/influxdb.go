@@ -16,6 +16,11 @@ import (
 	"github.com/influxdata/telegraf/plugins/outputs/influxdb/client"
 )
 
+var (
+	// Quote Ident replacer.
+	qiReplacer = strings.NewReplacer("\n", `\n`, `\`, `\\`, `"`, `\"`)
+)
+
 // InfluxDB struct is the primary data structure for the plugin
 type InfluxDB struct {
 	// URL is only for backwards compatability
