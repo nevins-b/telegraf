@@ -173,7 +173,52 @@ func (p *PrometheusClient) Collect(ch chan<- prometheus.Metric) {
 
 			ch <- metric
 		}
+		desc := prometheus.NewDesc(name, "Telegraf collected metric", labelNames, nil)
+
+		for _, sample := range family.Samples {
+			// Get labels for this sample; unset labels will be set to the
+			// empty string
+			var labels []string
+			for _, label := range labelNames {
+				v := sample.Labels[label]
+				labels = append(labels, v)
+			}
+
+			metric, err := prometheus.NewConstMetric(desc, family.ValueType, sample.Value, labels...)
+			if err != nil {
+				log.Printf("E! Error creating prometheus metric, "+
+					"key: %s, labels: %v,\nerr: %s\n",
+					name, labels, err.Error())
+			}
+
+			ch <- metric
+		}
 	}
+}
+
+func sanitize(value string) string {
+	return invalidNameCharRE.ReplaceAllString(value, "_")
+}
+
+func valueType(tt telegraf.ValueType) prometheus.ValueType {
+	switch tt {
+	case telegraf.Counter:
+		return prometheus.CounterValue
+	case telegraf.Gauge:
+		return prometheus.GaugeValue
+	default:
+		return prometheus.UntypedValue
+	}
+}
+
+// CreateSampleID creates a SampleID based on the tags of a telegraf.Metric.
+func CreateSampleID(tags map[string]string) SampleID {
+	pairs := make([]string, 0, len(tags))
+	for k, v := range tags {
+		pairs = append(pairs, fmt.Sprintf("%s=%s", k, v))
+	}
+	sort.Strings(pairs)
+	return SampleID(strings.Join(pairs, ","))
 }
 
 func sanitize(value string) string {
@@ -214,7 +259,7 @@ func (p *PrometheusClient) Write(metrics []telegraf.Metric) error {
 
 		labels := make(map[string]string)
 		for k, v := range tags {
-			labels[sanitize(k)] = v
+			labels[sanitize(k)] = sanitize(v)
 		}
 
 		for fn, fv := range point.Fields() {
@@ -254,17 +299,7 @@ func (p *PrometheusClient) Write(metrics []telegraf.Metric) error {
 				}
 				p.fam[mname] = fam
 			} else {
-				// Metrics can be untyped even though the corresponding plugin
-				// creates them with a type.  This happens when the metric was
-				// transferred over the network in a format that does not
-				// preserve value type and received using an input such as a
-				// queue consumer.  To avoid issues we automatically upgrade
-				// value type from untyped to a typed metric.
-				if fam.ValueType == prometheus.UntypedValue {
-					fam.ValueType = vt
-				}
-
-				if vt != prometheus.UntypedValue && fam.ValueType != vt {
+				if fam.ValueType != vt {
 					// Don't return an error since this would be a permanent error
 					log.Printf("Mixed ValueType for measurement %q; dropping point", point.Name())
 					break
