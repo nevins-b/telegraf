@@ -117,6 +117,7 @@
 - [#3011](https://github.com/influxdata/telegraf/issues/3011): Prevent Write from being called concurrently.
 
 ## v1.3.3 [2017-06-28]
+## v1.3.3 [unreleased]
 
 ### Bugfixes
 
@@ -136,6 +137,7 @@
 ## v1.3.1 [2017-05-31]
 ## v1.3.1 [unreleased]
 ## v1.3.2 [unreleased]
+
 ## v1.3.2 [2017-06-14]
 
 ### Bugfixes
