@@ -222,14 +222,9 @@ func (l *LogParserPlugin) receiver(tailer *tail.Tail) {
 		// Fix up files with Windows line endings.
 		text := strings.TrimRight(line.Text, "\r")
 
-		entry := logEntry{
-			path: tailer.Filename,
-			line: text,
-		}
-
 		select {
 		case <-l.done:
-		case l.lines <- entry:
+		case l.lines <- text:
 		}
 	}
 }
