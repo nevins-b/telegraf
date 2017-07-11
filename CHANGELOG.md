@@ -108,6 +108,7 @@
 - [#2554](https://github.com/influxdata/telegraf/issues/2554): Fix panic when agent.interval = "0s".
 
 ## v1.3.4 [2017-07-12]
+## v1.3.4 [unreleased]
 
 ### Bugfixes
 
@@ -118,6 +119,7 @@
 
 ## v1.3.3 [2017-06-28]
 ## v1.3.3 [unreleased]
+
 ## v1.3.3 [2017-06-28]
 
 ### Bugfixes
