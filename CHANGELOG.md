@@ -99,6 +99,7 @@
 - [#3015](https://github.com/influxdata/telegraf/issues/3015): Don't start Telegraf on install in Amazon Linux.
 
 ## v1.3.5 [2017-07-26]
+## v1.3.5 [unreleased]
 
 ### Bugfixes
 
@@ -109,6 +110,7 @@
 
 ## v1.3.4 [2017-07-12]
 ## v1.3.4 [unreleased]
+
 ## v1.3.4 [2017-07-12]
 
 ### Bugfixes
